@@ -7,17 +7,17 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   controllers: [GenreController],
-    imports: [
-      TypegooseModule.forFeature([
-        {
-          typegooseClass: GenreModel,
-          schemaOptions: {
-            collection: 'Genre'
-          }
+  imports: [
+    TypegooseModule.forFeature([
+      {
+        typegooseClass: GenreModel,
+        schemaOptions: {
+          collection: 'Genre'
         }
-      ]),
-      ConfigModule,
-    ],
+      }
+    ]),
+    ConfigModule,
+  ],
   providers: [GenreService]
 })
-export class GenreModule {}
+export class GenreModule { }
