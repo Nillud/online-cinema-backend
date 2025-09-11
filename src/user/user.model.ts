@@ -1,10 +1,9 @@
 import { prop } from '@typegoose/typegoose';
 import { TimeStamps, Base } from '@typegoose/typegoose/lib/defaultClasses';
-import { Types } from 'mongoose';
 
-export class UserModel extends TimeStamps implements Base {
-  _id: Types.ObjectId;
-  id: string;
+export interface UserModel extends Base { }
+
+export class UserModel extends TimeStamps {
   @prop({ unique: true })
   email: string;
 
