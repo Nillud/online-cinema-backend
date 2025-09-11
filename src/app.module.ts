@@ -4,11 +4,13 @@ import { AppService } from './app.service'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypegooseModule } from 'nestjs-typegoose'
 import { getMongoConfig } from './config/mongo.config'
+
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { GenreModule } from './genre/genre.module';
 import { FileModule } from './file/file.module';
 import { ActorModule } from './actor/actor.module';
+import { MovieModule } from './movie/movie.module';
 
 @Module({
   imports: [
@@ -22,7 +24,8 @@ import { ActorModule } from './actor/actor.module';
     UserModule,
     GenreModule,
     FileModule,
-    ActorModule
+    ActorModule,
+    MovieModule
   ],
   controllers: [AppController],
   providers: [AppService],
