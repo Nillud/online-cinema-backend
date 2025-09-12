@@ -25,7 +25,6 @@ export class UserController {
         return this.userService.updateProfile(_id, dto)
     }
 
-
     @Get('profile/favorites')
     @Auth()
     async getFavorites(@User('_id') _id: Types.ObjectId) {
