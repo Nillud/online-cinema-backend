@@ -4,12 +4,14 @@ import { MovieModel } from './movie.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { UpdateMovieDto } from './update-movie.dto';
 import { Types } from 'mongoose'
+import { TelegramService } from 'src/telegram/telegram.service';
 
 @Injectable()
 export class MovieService {
     constructor(
         @InjectModel(MovieModel)
-        private readonly MovieModel: ModelType<MovieModel>
+        private readonly MovieModel: ModelType<MovieModel>,
+        private readonly telegramService: TelegramService
     ) { }
     async getAll(searchTerm?: string) {
         let options = {}
@@ -46,7 +48,7 @@ export class MovieService {
                 $in: genreIds
             }
         }).populate('actors genres').exec()
-        if (!doc) throw new NotFoundException('Movies not found')
+        // if (!doc) throw new NotFoundException('Movies not found')
         return doc
     }
 
@@ -106,6 +108,11 @@ export class MovieService {
     }
 
     async update(_id: string, dto: UpdateMovieDto) {
+        if (!dto.isSendTelegram) {
+            await this.sendNotification(dto)
+            dto.isSendTelegram = true
+        }
+
         const updateMovie = await this.MovieModel.findByIdAndUpdate(_id, dto, {
             new: true
         }).exec()
@@ -119,5 +126,27 @@ export class MovieService {
 
         if (!deleteDoc) throw new NotFoundException('Movie not found')
         return deleteDoc
+    }
+
+    async sendNotification(dto: UpdateMovieDto) {
+        if (process.env.NODE_ENV !== 'development')
+            await this.telegramService.sendPhoto(dto.poster)
+
+        await this.telegramService.sendPhoto('https://www.tallengestore.com/cdn/shop/products/JohnWick-KeanuReeves-HollywoodEnglishActionMoviePoster-1_f986460a-0315-44b9-947f-3aa483cbf282.jpg?v=1649071588')
+
+        const msg = `<b>${dto.title}</b>`
+
+        await this.telegramService.sendMessage(msg, {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            url: 'https://okko.tv/movie/free-guy',
+                            text: 'Go to watch'
+                        }
+                    ]
+                ]
+            }
+        })
     }
 }
